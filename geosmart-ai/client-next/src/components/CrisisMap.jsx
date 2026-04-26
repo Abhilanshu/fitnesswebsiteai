@@ -66,17 +66,20 @@ const CrisisMap = ({ needs = [], govtAlerts = [], onContact, showHeatmap = false
         />
         <MapResizer />
 
-        {needs.map((need) => (
+        {needs.map((need) => {
+          const lat = need?.location?.coordinates?.lat || 20.5937;
+          const lng = need?.location?.coordinates?.lng || 78.9629;
+          return (
           <Marker 
             key={need._id} 
-            position={[need.location.coordinates.lat, need.location.coordinates.lng]}
+            position={[lat, lng]}
             icon={need.status === 'Resolved' ? greenIcon : need.status === 'Pending' ? yellowIcon : redIcon}
           >
             <Popup className="custom-popup">
               <div className="p-2 min-w-[200px]">
                 <div className="text-[10px] font-black uppercase text-primary mb-1">{need.category} Report</div>
                 <div className="text-sm font-black text-gray-900 mb-2 leading-tight">{need.description}</div>
-                <div className="text-[9px] font-bold text-gray-500 uppercase mb-3">{need.location.address}</div>
+                <div className="text-[9px] font-bold text-gray-500 uppercase mb-3">{need?.location?.address || 'Unknown Location'}</div>
                 {need.image && <div className="rounded-lg overflow-hidden border mb-3"><img src={need.image} className="w-full h-24 object-cover" /></div>}
                 <div className="flex justify-between items-center pt-3 border-t">
                    <div className="text-[8px] font-black uppercase text-gray-400">Responders: {need.assignedVolunteers?.length || 0}</div>
@@ -90,7 +93,7 @@ const CrisisMap = ({ needs = [], govtAlerts = [], onContact, showHeatmap = false
               </div>
             </Popup>
           </Marker>
-        ))}
+        )})}
 
         {govtAlerts.map((alert, i) => (
           <React.Fragment key={i}>
